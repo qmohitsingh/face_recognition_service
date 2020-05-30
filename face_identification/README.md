@@ -1,4 +1,4 @@
-# #Face-Recognition #Face-Antispoofing
+# #Face-Recognition 
 
 ## Install dependencies
 1. install required packages (pip install requirements.txt or pipenv install)
