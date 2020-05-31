@@ -5,8 +5,12 @@ from flask_cors import CORS
 from config import Constants
 import time
 from gevent.pywsgi import WSGIServer
-from liveness import liveness_detection
 
+
+from liveness import LivenessDetection
+
+obj = LivenessDetection()
+obj.load()
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -38,7 +42,7 @@ def liveness_test_socket(data):
 @socketio.on('facial_recognition')
 def livness_detection(data):
     print('liveness_test aocke called')
-    liveness_detection(data)
+    obj.liveness_detection(data)
 
 
 if __name__ == '__main__':
