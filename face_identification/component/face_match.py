@@ -6,7 +6,7 @@ import base64
 from utils.utils import compare_faces
 from config import Constants
 from flask_socketio import emit
-from face_identification.response import succes_response, more_faces_detected, no_face_detected
+from .response import succes_response, more_faces_detected, no_face_detected
 
 import logging
 import traceback
@@ -36,7 +36,7 @@ def get_boundingbox(box, w, h, scale=1.2):
     return x1, y1, size
 
 
-def facial_recognition(image):
+def facial_recognition(image, user_id=0):
     try:
         frames = []
         faces = []
@@ -83,17 +83,27 @@ def facial_recognition(image):
 
         print(matched, len(result), False if len(result) > 1 else matched)
 
-        return emit('facial_recognition_result',
+        matched = 1 if matched else 0
+
+
+        emit('facial_recognition_result',
                     {
                         'face_found': len(result),
-                        'face_matched': False if len(result) > 1 else matched
+                        'face_matched': 0 if len(result) > 1 else matched,
+                        "user_id": user_id
                     })
+        return
 
 
     except Exception as e:
         logger.error("error in matching faces")
         logger.error(e)
-
+        emit('facial_recognition_result',
+             {
+                 'face_found': 0,
+                 'face_matched': 0 ,
+                 "user_id": user_id
+             })
         
         logger.error(e, exc_info=True)
         raise

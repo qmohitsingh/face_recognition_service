@@ -96,6 +96,7 @@ class LivenessDetection:
 
     def liveness_detection(self, img, user_id=0):
         try:
+            liveness_flag = 0
             print("livenes method called")
             encoded_data = img.split(',')[1]
             decoded_data = base64.b64decode(encoded_data)
@@ -197,9 +198,9 @@ class LivenessDetection:
 
                     print("label: ", label)
 
-                    emit('liveness_test_result', {"liveness_flag": liveness_flag, "user_id": user_id})
 
-                    return
+
+            emit('liveness_test_result', {"liveness_flag": liveness_flag, "user_id": user_id})
 
         except Exception as e:
             print("Error in crop_with_ldmk", e)

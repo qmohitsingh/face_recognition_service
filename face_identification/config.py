@@ -11,3 +11,4 @@ class Constants:
     USER_NAME = CONFIG.get("USER_NAME")
     PASSWORD = CONFIG.get("PASSWORD")
     SERVER_ADDRESS = CONFIG.get("SERVER_ADDRESS")
+    MOHIT = CONFIG.get("MOHIT")

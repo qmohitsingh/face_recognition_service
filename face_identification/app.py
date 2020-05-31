@@ -5,8 +5,10 @@ from flask_cors import CORS
 from config import Constants
 import time
 from gevent.pywsgi import WSGIServer
-from face_identification.face_match import facial_recognition as FR
-#from liveness_detection.d emoimport liveness
+
+
+from component.face_match import facial_recognition
+
 
 
 app = Flask(__name__)
@@ -22,27 +24,17 @@ def get_current_time():
     return {'time': time.time()}
 
 
-
-# @socketio.on('catch-frame')
-# def catch_frame(data):
-#     detectFaceUltraLight(data)
-
-
-# @socketio.on('detected_frames')
-# def catch_frame(data):
-#     face_recognition(data)
-
-@socketio.on('catch-frame')
+@socketio.on('hello owrk')
 def liveness_test_socket(data):
-    print('liveness_test aocke called')
+    print('liveness_test aocke called', data)
 
 @socketio.on('facial_recognition')
-def facial_recognition(data):
+def facial_recognition_method(data):
     print('facial_recognition socket called')
-    FR(data)
+    facial_recognition(data)
 
 
 if __name__ == '__main__':
     http_server = WSGIServer((Constants.HOST, Constants.PORT), app)
-    print("Sever Started: http://localhost:5000")
+    print("Sever Started: http://localhost:5001")
     http_server.serve_forever()
