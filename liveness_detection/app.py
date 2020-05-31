@@ -25,23 +25,9 @@ def get_current_time():
     return {'time': time.time()}
 
 
-
-# @socketio.on('catch-frame')
-# def catch_frame(data):
-#     detectFaceUltraLight(data)
-
-
-# @socketio.on('detected_frames')
-# def catch_frame(data):
-#     face_recognition(data)
-
-@socketio.on('catch-frame')
-def liveness_test_socket(data):
-    print('liveness_test aocke called')
-
-@socketio.on('facial_recognition')
-def livness_detection(data):
-    print('liveness_test aocke called')
+@socketio.on('liveness_test')
+def livness_detection_method(data):
+    print('livness_detection_method scoket called')
     obj.liveness_detection(data)
 
 

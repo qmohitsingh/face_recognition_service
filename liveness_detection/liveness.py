@@ -7,6 +7,7 @@ import sys
 import numpy as np
 import imutils
 import time
+from flask_socketio import emit
 from imutils.video import VideoStream
 
 class LivenessDetection:
@@ -93,7 +94,7 @@ class LivenessDetection:
             attack_prob = preds[:, self.ATTACK]
         return attack_prob
 
-    def liveness_detection(self, img):
+    def liveness_detection(self, img, user_id=0):
         try:
             print("livenes method called")
             encoded_data = img.split(',')[1]
@@ -184,15 +185,21 @@ class LivenessDetection:
                     true_prob = 1 - attack_prob
                     if attack_prob > self.thresh:
                         label = 'fake'
+                        liveness_flag = 0
                         cv2.putText(frame, label + ' :' + str(attack_prob), (sx, sy - 10), cv2.FONT_HERSHEY_SIMPLEX,
                                     0.5,
                                     (0, 0, 255), 2)
                     else:
                         label = 'true'
+                        liveness_flag = 1
                         cv2.putText(frame, label + ' :' + str(true_prob), (sx, sy - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                                     (0, 0, 255), 2)
 
                     print("label: ", label)
+
+                    emit('liveness_test_result', {"liveness_flag": liveness_flag, "user_id": user_id})
+
+                    return
 
         except Exception as e:
             print("Error in crop_with_ldmk", e)
