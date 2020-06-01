@@ -1,4 +1,8 @@
 import numpy as np
+import pickle
+import base64
+import cv2
+import codecs
 
 # Euclidean Distance Caculator
 def face_distance(face_encodings, face_to_compare):
@@ -33,3 +37,18 @@ def dist(a, b, ax=1):
     print("distance: ", result)
     print('[0.73910816 :', result[0] < 1)
     return result[0] < 1
+
+
+def dump_pickle(embed):
+    return codecs.encode(pickle.dumps(embed), "base64").decode()
+
+def load_pickle(embed):
+    return pickle.loads(codecs.decode(embed.encode(), "base64"))
+
+
+def base64_to_img(image):
+    encoded_data = image.split(',')[1]
+    decoded_data = base64.b64decode(encoded_data)
+
+    np_data = np.fromstring(decoded_data, np.uint8)
+    return cv2.imdecode(np_data, cv2.IMREAD_UNCHANGED)

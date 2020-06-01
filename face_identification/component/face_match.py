@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 import torch
 import base64
-from utils.utils import compare_faces
+from libraries.utils import compare_faces
 from config import Constants
 from flask_socketio import emit
 from .response import succes_response, more_faces_detected, no_face_detected
@@ -36,10 +36,11 @@ def get_boundingbox(box, w, h, scale=1.2):
     return x1, y1, size
 
 
-def facial_recognition(image, user_id=0):
+def facial_recognition(image, saved_img, user_id=0):
     try:
         frames = []
         faces = []
+        counter = 0
 
         encoded_data = image.split(',')[1]
         decoded_data = base64.b64decode(encoded_data)
@@ -52,7 +53,7 @@ def facial_recognition(image, user_id=0):
 
         height, width, channels = colored_img.shape
 
-        print("channel: ", colored_img.shape, colored_img)
+        #print("channel: ", colored_img.shape, colored_img)
 
         # convert the test image to gray image as opencv face detector expects gray images
         gray_img = cv2.cvtColor(colored_img, cv2.COLOR_BGR2RGB)
@@ -62,12 +63,15 @@ def facial_recognition(image, user_id=0):
         print("detecting & extracting faces.")
         result = mtcnn.detect(frames)
 
+        print("list: ", result)
+
         for i, res in enumerate(result):
             if res is None:
                 continue
             # extract faces
             boxes, probs, lands = res
             for j, box in enumerate(boxes):
+                counter = counter + 1
                 # confidence of detected face
                 if probs[j] > 0.98:
                     h, w = frames[i].shape[:2]
@@ -75,13 +79,17 @@ def facial_recognition(image, user_id=0):
                     face = frames[i][y1:y1 + size, x1:x1 + size]
                     faces.append(face)
 
+        #print("counter: ",counter)
         embeds = facenet.embedding(faces)
 
-        print("Ebedding: ", embeds)
+        #print("Ebedding: ", embeds)
 
-        matched = compare_faces([embeds[0]], np.array(Constants.MOHIT), 1)
+        #print('compare embeds 1: ', embeds[0])
+        #print('compare embeds 2: ', np.array(Constants.MOHIT))
 
-        print(matched, len(result), False if len(result) > 1 else matched)
+        matched = compare_faces([embeds[0]], saved_img, 1)
+
+        #print(matched, len(result), False if len(result) > 1 else matched)
 
         matched = 1 if matched else 0
 
@@ -110,3 +118,49 @@ def facial_recognition(image, user_id=0):
     except:
         logger.error("uncaught exception: %s", traceback.format_exc())
         raise
+
+
+def get_face_embedding(image):
+    try:
+        frames = []
+        faces = []
+        counter = 0
+
+        encoded_data = image.split(',')[1]
+        decoded_data = base64.b64decode(encoded_data)
+
+        np_data = np.fromstring(decoded_data, np.uint8)
+        colored_img = cv2.imdecode(np_data, cv2.IMREAD_UNCHANGED)
+
+        if colored_img is None:
+            return
+
+        # convert the test image to gray image as opencv face detector expects gray images
+        gray_img = cv2.cvtColor(colored_img, cv2.COLOR_BGR2RGB)
+
+        frames.append(gray_img);
+
+        print("detecting & extracting faces.")
+        result = mtcnn.detect(frames)
+
+        for i, res in enumerate(result):
+            if res is None:
+                continue
+            # extract faces
+            boxes, probs, lands = res
+            for j, box in enumerate(boxes):
+                counter = counter + 1
+                # confidence of detected face
+                if probs[j] > 0.98:
+                    h, w = frames[i].shape[:2]
+                    x1, y1, size = get_boundingbox(box, w, h)
+                    face = frames[i][y1:y1 + size, x1:x1 + size]
+                    faces.append(face)
+
+        embeds = [] if counter > 1 else facenet.embedding(faces)
+
+        return {"embeds": embeds[0], "counter": counter}
+
+    except Exception as e:
+        print("Error get_face_embedding: ", e)
+
