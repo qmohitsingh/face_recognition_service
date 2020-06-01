@@ -106,6 +106,7 @@ def update_user_method(data):
               "status": 400
               })
 
+
 @socketio.on('facial_recognition')
 def facial_recognition_method(data):
     print('facial_recognition socket called')
@@ -121,5 +122,5 @@ def facial_recognition_method(data):
 
 if __name__ == '__main__':
     http_server = WSGIServer((Constants.HOST, Constants.PORT), app)
-    print("Sever Started: http://localhost:5001")
+    print("Sever Started: http://0.0.0.0:5001")
     http_server.serve_forever()
