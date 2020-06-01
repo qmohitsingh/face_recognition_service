@@ -107,6 +107,42 @@ def update_user_method(data):
               })
 
 
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+    try:
+        if request.method == 'GET':
+            """return the information for <user_id>"""
+            return jsonify(result='login api...')
+
+        if request.method == 'POST':
+
+            data = request.form
+            user_name = data['user_name']
+            password = data['password']
+
+            print("data post api: ", user_name, password)
+
+            rows = obj.login(user_name, password)
+
+            print("rows: ", rows)
+
+            if rows is None:
+                return jsonify(status=400, message="user does not exist.")
+
+
+
+            print("data post api: ", user_name, password)
+
+            return jsonify(
+                status=200,
+                message="login successful",
+                data={"user_id": rows[0], "user_name": rows[1], "name": rows[2]}
+            )
+
+    except Exception as e:
+        print("Error add_user: ", e)
+        return jsonify(status=400, message='Failed to login')
+
 @socketio.on('facial_recognition')
 def facial_recognition_method(data):
     print('facial_recognition socket called')

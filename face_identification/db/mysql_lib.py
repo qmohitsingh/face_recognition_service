@@ -38,6 +38,7 @@ class MySqlConncetion:
 
             self.cursor.execute(sql, (0, user_id))
             rows = self.cursor.fetchone()
+            self.connection.commit()
 
             #print('rows:', rows, rows[0])
             return rows[0]
@@ -46,8 +47,6 @@ class MySqlConncetion:
 
     def save_embeds_by_userid(self, embeds, user_id):
         try:
-
-
             sql = "INSERT INTO tb_embeddings(user_id, embedding) " \
                   "VALUES (%s, %s) ON DUPLICATE " \
                   "KEY UPDATE embedding = %s "
@@ -56,6 +55,22 @@ class MySqlConncetion:
             self.connection.commit()
 
             return {"message": "success"}
+        except Exception as e:
+            print("Error: ", e)
+            raise
+
+    def login(self, user_name, password):
+        try:
+
+            sql = "SELECT user_id, user_name, name FROM tb_users " \
+                  "WHERE user_name=%s AND password = %s AND is_deleted=%s"
+
+            self.cursor.execute(sql, (user_name, password, 0))
+            rows = self.cursor.fetchone()
+            self.connection.commit()
+
+            return rows
+
         except Exception as e:
             print("Error: ", e)
             raise
