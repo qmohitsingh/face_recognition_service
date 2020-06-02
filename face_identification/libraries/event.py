@@ -54,21 +54,21 @@ class Event:
                         "message": 'Something went wrong in face recognition'
                     })
 
-        @register.socketio.on('update_user')
-        @authenticated_only
-        def add_user(data):
-            try:
-                print("add user mtho called")
-
-                result = User.add_user_by_socket(register.mysql, register.facematch, data["image"], data["source_id"], data["user_id"], data["agent_id"])
-
-                emit("update_user_result", result)
-
-            except Exception as e:
-                print("Error add_user: ", e)
-                emit("update_user_result", {
-                    "status": 400,
-                    "message": 'Something went wrong while adding user'
-                })
+        # @register.socketio.on('update_user')
+        # @authenticated_only
+        # def add_user(data):
+        #     try:
+        #         print("add user mtho called")
+        #
+        #         result = User.add_user_by_socket(register.mysql, register.facematch, data["image"], data["source_id"], data["user_id"], data["agent_id"])
+        #
+        #         emit("update_user_result", result)
+        #
+        #     except Exception as e:
+        #         print("Error add_user: ", e)
+        #         emit("update_user_result", {
+        #             "status": 400,
+        #             "message": 'Something went wrong while adding user'
+        #         })
 
 
