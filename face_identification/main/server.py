@@ -1,5 +1,5 @@
-from flask import Flask, request
-from flask_socketio import SocketIO, disconnect, emit
+from flask import Flask
+from flask_socketio import SocketIO
 from flask_cors import CORS
 import functools
 from config import Constants
@@ -8,20 +8,21 @@ from gevent.pywsgi import WSGIServer
 from libraries.auth import Auth
 from libraries.event import Event
 from libraries.routes import Route
-
-from liveness import LivenessDetection
+from db.mysql_lib import MySql
+from component.recognition.face_match import FaceMatch
 
 
 class Server:
     def __init__(self):
 
-        self.liveness = LivenessDetection()
+        self.mysql = MySql()
 
         self.app = Flask(__name__)
         self.socketio = SocketIO(self.app, cors_allowed_origins="*")
         CORS(self.app)
 
-        self.load_model()
+        #self.load_model()
+        self.facematch = FaceMatch()
 
         self.event = Event()
         self.route = Route()
@@ -29,9 +30,8 @@ class Server:
         self.event.register_event(self)
         self.route.register_route(self)
 
-
-    def load_model(self):
-        self.liveness.load()
+    # def load_model(self):
+    #     self.liveness.load()
 
     def run(self):
         http_server = WSGIServer((Constants.HOST, Constants.PORT), self.app)

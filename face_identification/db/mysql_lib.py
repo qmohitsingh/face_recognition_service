@@ -3,20 +3,21 @@ from config import Constants
 import logging
 import traceback
 
-#logger configuration
-logging.basicConfig(level=logging.DEBUG, filename='face_recognition.log', format='%(asctime)s %(levelname)s:%(message)s')
+# logger configuration
+logging.basicConfig(level=logging.DEBUG, filename='face_recognition.log',
+                    format='%(asctime)s %(levelname)s:%(message)s')
 logger = logging.getLogger(__name__)
 
 
-class MySqlConncetion:
+class MySql:
     def __init__(self):
         try:
 
             self.connection = mysql.connector.connect(
-                user= Constants.USER_NAME,
-                password= Constants.PASSWORD,
-                host= Constants.DATABASE_HOST,
-                database= Constants.DATABASE
+                user=Constants.USER_NAME,
+                password=Constants.PASSWORD,
+                host=Constants.DATABASE_HOST,
+                database=Constants.DATABASE
             )
 
             self.cursor = self.connection.cursor()
@@ -40,18 +41,18 @@ class MySqlConncetion:
             rows = self.cursor.fetchone()
             self.connection.commit()
 
-            #print('rows:', rows, rows[0])
+            # print('rows:', rows, rows[0])
             return rows[0]
         except Exception as e:
             print("Error: ", e)
 
-    def save_embeds_by_userid(self, embeds, user_id):
+    def save_embeds_by_userid(self, source_id, user_id, agent_id, embedding):
         try:
-            sql = "INSERT INTO tb_embeddings(user_id, embedding) " \
-                  "VALUES (%s, %s) ON DUPLICATE " \
-                  "KEY UPDATE embedding = %s "
+            sql = "INSERT INTO tb_face_embeddings(source_id, user_id, agent_id, embedding) " \
+                  "VALUES (%s, %s,%s, %s) ON DUPLICATE " \
+                  "KEY UPDATE embedding = %s WHERE is_deleted=%s"
 
-            self.cursor.execute(sql, (user_id, embeds, embeds))
+            self.cursor.execute(sql, (source_id, user_id, agent_id, embedding, embedding, 0))
             self.connection.commit()
 
             return {"message": "success"}
@@ -72,5 +73,5 @@ class MySqlConncetion:
             return rows
 
         except Exception as e:
-            print("Error: ", e)
+            print("Error login: ", e)
             raise
