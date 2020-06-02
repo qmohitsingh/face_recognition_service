@@ -1,37 +1,45 @@
 
-from flask import Flask
-from flask_socketio import SocketIO
+from flask import Flask, request
+from flask_socketio import SocketIO, disconnect, emit
 from flask_cors import CORS
+import functools
 from config import Constants
 import time
 from gevent.pywsgi import WSGIServer
-
+from libraries.auth import Auth
+from libraries.event import Event
 
 from liveness import LivenessDetection
 
-obj = LivenessDetection()
-obj.load()
 
-app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
-CORS(app)
+class ApplicationExample:
+    def __init__(self):
 
-@app.route('/')
-def hello_world():
-    return 'Welcome to liveness detection ai'
+        self.liveness = LivenessDetection()
 
-@app.route('/time')
-def get_current_time():
-    return {'time': time.time()}
+        self.app = Flask(__name__)
+        self.socketio = SocketIO(self.app, cors_allowed_origins="*")
+        CORS(self.app)
+
+        self.load_model()
+
+        self.event = Event()
+
+        self.event.register_event(self)
 
 
-@socketio.on('liveness_test')
-def livness_detection_method(data):
-    print('livness_detection_method scoket called')
-    obj.liveness_detection(data)
+    def load_model(self):
+        self.liveness.load()
+
+    def run(self):
+        http_server = WSGIServer((Constants.HOST, Constants.PORT), self.app)
+        print("Sever Started: http://localhost:5000")
+        http_server.serve_forever()
 
 
 if __name__ == '__main__':
-    http_server = WSGIServer((Constants.HOST, Constants.PORT), app)
-    print("Sever Started: http://localhost:5000")
-    http_server.serve_forever()
+    # http_server = WSGIServer((Constants.HOST, Constants.PORT), app)
+    # print("Sever Started: http://localhost:5000")
+    # http_server.serve_forever()
+    obj = ApplicationExample();
+    obj.run()

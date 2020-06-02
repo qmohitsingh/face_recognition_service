@@ -67,8 +67,15 @@ def update_user():
         print("Error add_user: ", e)
 
 
+@socketio.on('connect')
+def connect():
+    access_token = request.args.get('access_token')
+    print("token", access_token)
+    print("token", access_token)
+
 
 @socketio.on('update_user')
+
 def update_user_method(data):
     try:
         print("update_user socket called")
@@ -127,7 +134,7 @@ def login():
             print("rows: ", rows)
 
             if rows is None:
-                return jsonify(status=400, message="user does not exist.")
+                return jsonify(status=400, message="Invalid credentials.")
 
 
 
