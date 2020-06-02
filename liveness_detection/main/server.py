@@ -32,6 +32,6 @@ class Server:
 
     def run(self):
         http_server = WSGIServer((Constants.HOST, Constants.PORT), self.app)
-        print("Sever Started: http://localhost:5000")
+        print("Sever Started: http://"+Constants.HOST+":"+Constants.PORT)
         http_server.serve_forever()
 
