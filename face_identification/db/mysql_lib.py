@@ -3,10 +3,10 @@ from config import Constants
 import logging
 import traceback
 
-# logger configuration
-logging.basicConfig(level=logging.DEBUG, filename='face_recognition.log',
-                    format='%(asctime)s %(levelname)s:%(message)s')
-logger = logging.getLogger(__name__)
+# # logger configuration
+# logging.basicConfig(level=logging.DEBUG, filename='face_recognition.log',
+#                     format='%(asctime)s %(levelname)s:%(message)s')
+# logger = logging.getLogger(__name__)
 
 
 class MySql:
@@ -22,15 +22,12 @@ class MySql:
 
             self.cursor = self.connection.cursor()
 
-            logger.info("created connection to mysql")
+            #logger.info("created connection to mysql")
             print("Connected to mysql successfully..", self.cursor, self.connection.is_connected())
 
         except Exception as e:
-            print("This file is running")
-            logger.error("error in creating mysql connection", e)
-            raise
-        except:
-            logger.error("uncaught exception: %s", traceback.format_exc())
+            print("This file is running", e)
+            #logger.error("error in creating mysql connection", e)
             raise
 
     def get_embeds_by_userid(self, user_id):
@@ -45,19 +42,19 @@ class MySql:
             return rows[0]
         except Exception as e:
             print("Error: ", e)
+            raise
 
     def save_embeds_by_userid(self, source_id, user_id, agent_id, embedding):
         try:
             sql = "INSERT INTO tb_face_embeddings(source_id, user_id, agent_id, embedding) " \
-                  "VALUES (%s, %s,%s, %s) ON DUPLICATE " \
-                  "KEY UPDATE embedding = %s WHERE is_deleted=%s"
+                  "VALUES (%s, %s,%s, %s) "
 
-            self.cursor.execute(sql, (source_id, user_id, agent_id, embedding, embedding, 0))
+            self.cursor.execute(sql, (source_id, user_id, agent_id, embedding))
             self.connection.commit()
 
             return {"message": "success"}
         except Exception as e:
-            print("Error: ", e)
+            print("Error save_embeds_by_userid: ", e)
             raise
 
     def login(self, user_name, password):
