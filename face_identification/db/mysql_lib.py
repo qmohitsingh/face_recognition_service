@@ -15,7 +15,7 @@ class MySqlConncetion:
             self.connection = mysql.connector.connect(
                 user= Constants.USER_NAME,
                 password= Constants.PASSWORD,
-                host= Constants.HOST,
+                host= Constants.DATABASE_HOST,
                 database= Constants.DATABASE
             )
 
