@@ -1,12 +1,11 @@
 # #Face-Recognition 
 
-## Install dependencies
-1. install required packages (pip install requirements.txt or pipenv install)
-Note: you can install pipenv using pip (pip install pipenv)
+# Install dependencies
 
+Install requirements using pip install -r requirements.txt or pipenv install
 
+# how to use
+ run `python app.py`
 
-## how to use
-`python app.py`
 
 
