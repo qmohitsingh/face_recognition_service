@@ -47,10 +47,15 @@ class MySql:
 
     def save_embeds_by_userid(self, source_id, user_id, agent_id, embedding):
         try:
-            sql = "INSERT INTO tb_face_embeddings(source_id, user_id, agent_id, embedding) " \
-                  "VALUES (%s, %s,%s, %s) "
+            # sql = "INSERT INTO tb_face_embeddings(source_id, user_id, agent_id, embedding) " \
+            #       "VALUES (%s, %s,%s, %s) "
+            #
+            # self.cursor.execute(sql, (source_id, user_id, agent_id, embedding))
 
-            self.cursor.execute(sql, (source_id, user_id, agent_id, embedding))
+            sql = "INSERT INTO tb_face_embeddings(source_id, user_id, agent_id, embedding) " \
+                  "VALUES (%s, %s,%s, %s) ON DUPLICATE KEY UPDATE embedding = %s;"
+
+            self.cursor.execute(sql, (source_id, user_id, agent_id, embedding, embedding))
             self.connection.commit()
 
             return {"message": "success"}
