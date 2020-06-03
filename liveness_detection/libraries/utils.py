@@ -55,7 +55,7 @@ def base64_to_img(image):
     return cv2.imdecode(np_data, cv2.IMREAD_UNCHANGED)
 
 
-def send_error(error):
+def send_error(error=None):
 
     if isinstance(error, str):
         return jsonify(statusCode=400, error="ERROR_MESSAGE", message=error)
@@ -65,7 +65,7 @@ def send_error(error):
         return jsonify(statusCode=400, error="DEFAULT_ERROR_MESSAGE", message="Something went wrong")
 
 
-def send_success(result):
+def send_success(result=None):
 
     if isinstance(result, str):
         return jsonify(statusCode=200, message=result, data={})

@@ -44,7 +44,7 @@ class Event:
         def facial_recognition_method(data):
             try:
 
-                result = register.facematch.facial_recognition_method_by_socket(register.mysql, data["image"], data["user_id"])
+                result = register.facematch.facial_recognition_method_by_socket(register.mysql, data["image"], data["source_id"], data["user_id"], data["agent_id"])
 
                 emit("facial_recognition_result", result)
 

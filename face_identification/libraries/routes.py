@@ -24,14 +24,15 @@ class Route:
                     return jsonify(result='hello user this get api for facial_recognition of a user')
 
                 if request.method == 'POST':
-                    data = request.form
+
+                    data = request.get_json()
 
                     is_authenticated = self.session.authentication(data['access_token'], data['source_id'])
 
                     if not is_authenticated:
                         return send_error({"status": 401, "message": 'Unauthorized Error.'})
 
-                    result = register.facematch.facial_recognition_method(register.mysql, data["image"], data["user_id"])
+                    result = register.facematch.facial_recognition_method(register.mysql, data["image"], data["source_id"], data["user_id"], data["agent_id"])
 
                     return send_success(result)
 
@@ -47,7 +48,8 @@ class Route:
                     return jsonify(result='hello user this get api for add user')
 
                 if request.method == 'POST':
-                    data = request.form
+
+                    data = request.get_json()
 
                     is_authenticated = self.session.authentication(data['access_token'], data['source_id'])
 
@@ -58,7 +60,7 @@ class Route:
 
                     return send_success(result)
             except Exception as e:
-                print("Error add_user: ", e)
+                print("Error add_user api: ", e)
                 return send_error()
 
         # @register.app.route('/update/user', methods=['GET', 'POST'])
@@ -97,6 +99,9 @@ class Route:
                     result = User.user_login(register.mysql, user_name, password)
 
                     return send_success(result)
+                if not request.json:
+                    return "not a json post"
+                return "json post succeeded"
 
             except Exception as e:
                 print("Error add_user: ", e)

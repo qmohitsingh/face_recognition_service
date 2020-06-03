@@ -30,11 +30,12 @@ class MySql:
             #logger.error("error in creating mysql connection", e)
             raise
 
-    def get_embeds_by_userid(self, user_id):
+    def get_embeds_by_userid(self, source_id, user_id, agent_id):
         try:
-            sql = "SELECT embedding FROM tb_embeddings WHERE is_deleted=%s AND user_id = %s"
+            sql = "SELECT embedding FROM tb_face_embeddings " \
+                  "WHERE is_deleted=%s AND source_id = %s AND user_id = %s AND agent_id = %s"
 
-            self.cursor.execute(sql, (0, user_id))
+            self.cursor.execute(sql, (0, source_id, user_id, agent_id))
             rows = self.cursor.fetchone()
             self.connection.commit()
 

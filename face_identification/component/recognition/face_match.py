@@ -162,11 +162,11 @@ class FaceMatch:
             print("Error get_face_embedding: ", e)
             raise
 
-    def facial_recognition_method(self, mysql, input_image, user_id):
+    def facial_recognition_method(self, mysql, input_image, source_id, user_id, agent_id):
         try:
             print('facial_recognition method called')
 
-            pickled_obj = mysql.get_embeds_by_userid(user_id)
+            pickled_obj = mysql.get_embeds_by_userid(source_id, user_id, agent_id)
             saved_user_img = load_pickle(pickled_obj)
 
             # print("imag pickelD: ", saved_img)
@@ -176,11 +176,11 @@ class FaceMatch:
             print("Error facial_recognition_method: ", e)
             raise
 
-    def facial_recognition_method_by_socket(self, mysql, input_image, user_id):
+    def facial_recognition_method_by_socket(self, mysql, input_image, source_id, user_id, agent_id):
         try:
             print('facial_recognition method called')
 
-            pickled_obj = mysql.get_embeds_by_userid(user_id)
+            pickled_obj = mysql.get_embeds_by_userid(source_id, user_id, agent_id)
             saved_user_img = load_pickle(pickled_obj)
 
             # print("imag pickelD: ", saved_img)

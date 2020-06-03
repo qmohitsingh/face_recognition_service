@@ -6,6 +6,7 @@ class User:
     @staticmethod
     def add_user(mysql, facematch, image, source_id, user_id, agent_id):
         try:
+
             embeds_data = facematch.get_face_embedding(image)
 
             pickle_data = dump_pickle(embeds_data['embeds'])
