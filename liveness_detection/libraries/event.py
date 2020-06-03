@@ -2,6 +2,8 @@ from flask import request
 from flask_socketio import disconnect, emit
 import functools
 
+from .utils import send_error, send_success
+
 from .auth import Auth
 
 
@@ -37,6 +39,15 @@ class Event:
 
         @register.socketio.on('liveness_test')
         @authenticated_only
-        def livness_detection_method(data):
-            print('livness_detection_method scoket called')
-            register.liveness.liveness_detection(data)
+        def liveness_detection_method(data):
+            try:
+                print("liveness_test_result called")
+                result = register.liveness.get_liveness_result(data)
+                emit("liveness_test_result", result)
+
+            except Exception as e:
+                print("e", e)
+                emit("liveness_test_result", {
+                    "status": 400,
+                    "message": 'Something went wrong in face recognition'
+                })

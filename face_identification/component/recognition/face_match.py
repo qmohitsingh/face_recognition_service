@@ -101,11 +101,14 @@ class FaceMatch:
             matched = 1 if matched else 0
 
             return {
-                     'face_found': len(result),
-                     'face_matched': 0 if len(result) > 1 else matched,
-                     "user_id": user_id,
-                     "message": "success"
-                 }
+                'data':
+                    {
+                        'face_found': len(result),
+                        'face_matched': 0 if len(result) > 1 else matched,
+                        "user_id": user_id,
+                        "message": "success"
+                    }
+            }
 
         except Exception as e:
             print("Error facial_recognition: ", e)
@@ -167,21 +170,11 @@ class FaceMatch:
             saved_user_img = load_pickle(pickled_obj)
 
             # print("imag pickelD: ", saved_img)
-            result = self.facial_recognition(input_image, saved_user_img, user_id)
-
-            return jsonify(
-                status=200,
-                face_found=result['counter'],
-                face_matched=result['face_matched'],
-                message=result['message']
-            )
+            return self.facial_recognition(input_image, saved_user_img, user_id)
 
         except Exception as e:
             print("Error facial_recognition_method: ", e)
-            return jsonify(
-                status=400,
-                message='Something went wrong in face recognition'
-            )
+            raise
 
     def facial_recognition_method_by_socket(self, mysql, input_image, user_id):
         try:
@@ -195,9 +188,9 @@ class FaceMatch:
 
             return {
                 "status": 200,
-                "face_found": result['face_found'],
-                "face_matched": result['face_matched'],
-                "message": result['message']
+                "face_found": result['data']['face_found'],
+                "face_matched": result['data']['face_matched'],
+                "message": result['data']['message']
             }
 
         except Exception as e:
@@ -205,4 +198,4 @@ class FaceMatch:
             return {
                 "status": 400,
                 "message": 'Something went wrong in face recognition'
-        }
+            }

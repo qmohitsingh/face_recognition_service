@@ -1,4 +1,5 @@
 import numpy as np
+from flask import jsonify
 import pickle
 import base64
 import cv2
@@ -52,3 +53,26 @@ def base64_to_img(image):
 
     np_data = np.fromstring(decoded_data, np.uint8)
     return cv2.imdecode(np_data, cv2.IMREAD_UNCHANGED)
+
+
+def send_error(error):
+
+    if isinstance(error, str):
+        return jsonify(statusCode=400, error="ERROR_MESSAGE", message=error)
+    elif bool(error) and isinstance(error, dict):
+        return jsonify(error)
+    else:
+        return jsonify(statusCode=400, error="DEFAULT_ERROR_MESSAGE", message="Something went wrong")
+
+
+def send_success(result):
+
+    if isinstance(result, str):
+        return jsonify(statusCode=200, message=result, data={})
+    elif bool(result) and isinstance(result, dict):
+        return jsonify(
+            statusCode=200,
+            message=result['message'] if 'message' in result else "success",
+            data=result['data'] if 'data' in result else {})
+    else:
+        return jsonify(statusCode=400, message="success", data={})

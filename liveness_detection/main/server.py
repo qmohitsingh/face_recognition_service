@@ -9,7 +9,7 @@ from libraries.auth import Auth
 from libraries.event import Event
 from libraries.routes import Route
 
-from liveness import LivenessDetection
+from component.liveness import LivenessDetection
 
 
 class Server:

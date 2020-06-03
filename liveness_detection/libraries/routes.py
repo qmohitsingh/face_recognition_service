@@ -2,6 +2,8 @@ import time
 
 from .auth import Auth
 
+from .utils import send_error, send_success
+
 
 class Route:
 
@@ -13,9 +15,9 @@ class Route:
 
         @register.app.route('/')
         def hello_world():
-            return 'Welcome to liveness detection ai'
+            return send_success('Welcome to liveness detection ai')
 
         @register.app.route('/time')
         def get_current_time():
-            return {'time': time.time()}
+            return send_success({"data": {'time': time.time()}})
 

@@ -8,7 +8,7 @@ import numpy as np
 import imutils
 import time
 from flask_socketio import emit
-from imutils.video import VideoStream
+
 
 class LivenessDetection:
     def __init__(self, attack=1, genuine=0, thresh=0.7):
@@ -17,23 +17,27 @@ class LivenessDetection:
         self.thresh = thresh
 
     def load(self, protoPath="./face_detector/deploy.prototxt",
-             modelPath ="./face_detector/res10_300x300_ssd_iter_140000.caffemodel",
-             protoPath2 = "./face_alignment/2_deploy.prototxt",
-             modelPath2 = "./face_alignment/2_solver_iter_800000.caffemodel",
-             model_name = "MyresNet18", load_model_path = "a8.pth"):
-        print("Loading models..")
-        #protoPath = "./face_detector/deploy.prototxt"
-        #modelPath = "./face_detector/res10_300x300_ssd_iter_140000.caffemodel"
-        self.net = cv2.dnn.readNetFromCaffe(protoPath, modelPath)
+             modelPath="./face_detector/res10_300x300_ssd_iter_140000.caffemodel",
+             protoPath2="./face_alignment/2_deploy.prototxt",
+             modelPath2="./face_alignment/2_solver_iter_800000.caffemodel",
+             model_name="MyresNet18", load_model_path="./pretrained_model/a8.pth"):
+        try:
+            print("Loading models..")
+            # protoPath = "./face_detector/deploy.prototxt"
+            # modelPath = "./face_detectdsor/res10_300x300_ssd_iter_140000.caffemodel"
+            self.net = cv2.dnn.readNetFromCaffe(protoPath, modelPath)
 
-        #protoPath2 = "./face_alignment/2_deploy.prototxt"
-        #modelPath2 = "./face_alignment/2_solver_iter_800000.caffemodel"
-        self.net2 = cv2.dnn.readNetFromCaffe(protoPath2, modelPath2)
+            # protoPath2 = "./face_alignment/2_deploy.prototxt"
+            # modelPath2 = "./face_alignment/2_solver_iter_800000.caffemodel"
+            self.net2 = cv2.dnn.readNetFromCaffe(protoPath2, modelPath2)
 
-        self.model = getattr(models, model_name)().eval()
-        self.model.load(load_model_path)
-        self.model.train(False)
-        print("Done Loading models..")
+            self.model = getattr(models, model_name)().eval()
+            self.model.load(load_model_path)
+            self.model.train(False)
+            print("Done Loading models..")
+        except Exception as e:
+            print("Model Failed to load", e)
+            raise
 
     def detector(self, img):
         try:
@@ -94,16 +98,9 @@ class LivenessDetection:
             attack_prob = preds[:, self.ATTACK]
         return attack_prob
 
-    def liveness_detection(self, img, user_id=0):
+    def liveness_detection(self, frame, user_id):
         try:
             liveness_flag = 0
-            print("livenes method called")
-            encoded_data = img.split(',')[1]
-            decoded_data = base64.b64decode(encoded_data)
-
-            np_data = np.fromstring(decoded_data, np.uint8)
-            # print("original data: ", np_data)
-            frame = cv2.imdecode(np_data, cv2.IMREAD_UNCHANGED)
 
             frame = imutils.resize(frame, width=600)
 
@@ -114,6 +111,9 @@ class LivenessDetection:
             start = time.time()
 
             detections = self.net.forward()
+
+            print("detections: ", detections, len(detections))
+
             end = time.time()
 
             print('detect times : %.3f ms' % ((end - start) * 1000))
@@ -159,7 +159,7 @@ class LivenessDetection:
                     blob2 = cv2.dnn.blobFromImage(cv2.resize(new_frame, (40, 40)), 1.0, (40, 40), (0, 0, 0))
                     self.net2.setInput(blob2)
                     align = self.net2.forward()
-                    print("algin net2 used")
+
                     aligns = []
                     alignss = []
                     for i in range(0, 68):
@@ -198,11 +198,33 @@ class LivenessDetection:
 
                     print("label: ", label)
 
-
-
-            emit('liveness_test_result', {"liveness_flag": liveness_flag, "user_id": user_id})
+            return {"liveness_flag": liveness_flag, "user_id": user_id}
 
         except Exception as e:
             print("Error in crop_with_ldmk", e)
             raise
 
+    def get_liveness_result(self, img, user_id=0):
+        try:
+            encoded_data = img.split(',')[1]
+            decoded_data = base64.b64decode(encoded_data)
+
+            np_data = np.fromstring(decoded_data, np.uint8)
+            # print("original data: ", np_data)
+            frame = cv2.imdecode(np_data, cv2.IMREAD_UNCHANGED)
+
+            result = self.liveness_detection(frame, user_id)
+
+            return {
+                "status": 200,
+                "face_found": True,
+                "liveness_flag": result['liveness_flag'],
+                "message": "success"
+            }
+
+        except Exception as e:
+            print("Error get_liveness_result: ", e)
+            return {
+                "status": 400,
+                "message": 'Something went wrong in face recognition'
+            }

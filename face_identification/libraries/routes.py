@@ -3,6 +3,7 @@ from component.users.user import User
 
 from .auth import Auth
 
+from .utils import send_error, send_success
 
 class Route:
 
@@ -28,16 +29,15 @@ class Route:
                     is_authenticated = self.session.authentication(data['access_token'], data['source_id'])
 
                     if not is_authenticated:
-                        return jsonify(status=401, message='Unauthorized Error.')
+                        return send_error({"status": 401, "message": 'Unauthorized Error.'})
 
-                    return register.facematch.facial_recognition_method(register.mysql, data["image"], data["user_id"])
+                    result = register.facematch.facial_recognition_method(register.mysql, data["image"], data["user_id"])
+
+                    return send_success(result)
 
             except Exception as e:
                 print("Error add_user: ", e)
-                return jsonify(
-                    status=400,
-                    message='Something went wrong in face recognition'
-                )
+                return send_error('Something went wrong in face recognition')
 
         @register.app.route('/add/user', methods=['GET', 'POST'])
         def add_user():
@@ -52,16 +52,14 @@ class Route:
                     is_authenticated = self.session.authentication(data['access_token'], data['source_id'])
 
                     if not is_authenticated:
-                        return jsonify(status=401, message='Unauthorized Error.')
+                        return send_error({"status": 401, "message": 'Unauthorized Error.'})
 
-                    return User.add_user(register.mysql, register.facematch, data["image"], data["source_id"], data["user_id"], data["agent_id"])
+                    result = User.add_user(register.mysql, register.facematch, data["image"], data["source_id"], data["user_id"], data["agent_id"])
 
+                    return send_success(result)
             except Exception as e:
                 print("Error add_user: ", e)
-                return jsonify(
-                    status=400,
-                    message='Something went wrong in face recognition'
-                )
+                return send_error()
 
         # @register.app.route('/update/user', methods=['GET', 'POST'])
         # def update_user():
@@ -96,9 +94,11 @@ class Route:
 
                     print("data post api: ", user_name, password)
 
-                    return User.user_login(register.mysql, user_name, password)
+                    result = User.user_login(register.mysql, user_name, password)
+
+                    return send_success(result)
 
             except Exception as e:
                 print("Error add_user: ", e)
-                return jsonify(status=400, message='Failed to login')
+                return send_error(dict(message='Failed to login'))
 

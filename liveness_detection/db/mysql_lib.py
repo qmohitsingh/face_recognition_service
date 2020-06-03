@@ -3,33 +3,31 @@ from config import Constants
 import logging
 import traceback
 
-#logger configuration
-logging.basicConfig(level=logging.DEBUG, filename='face_recognition.log', format='%(asctime)s %(levelname)s:%(message)s')
-logger = logging.getLogger(__name__)
+# # logger configuration
+# logging.basicConfig(level=logging.DEBUG, filename='face_recognition.log',
+#                     format='%(asctime)s %(levelname)s:%(message)s')
+# logger = logging.getLogger(__name__)
 
 
-class MySqlConncetion:
+class MySql:
     def __init__(self):
         try:
 
             self.connection = mysql.connector.connect(
-                user= Constants.USER_NAME,
-                password= Constants.PASSWORD,
-                host= Constants.HOST,
-                database= Constants.DATABASE
+                user=Constants.USER_NAME,
+                password=Constants.PASSWORD,
+                host=Constants.DATABASE_HOST,
+                database=Constants.DATABASE
             )
 
             self.cursor = self.connection.cursor()
 
-            logger.info("created connection to mysql")
+            #logger.info("created connection to mysql")
             print("Connected to mysql successfully..", self.cursor, self.connection.is_connected())
 
         except Exception as e:
-            print("This file is running")
-            logger.error("error in creating mysql connection", e)
-            raise
-        except:
-            logger.error("uncaught exception: %s", traceback.format_exc())
+            print("This file is running", e)
+            #logger.error("error in creating mysql connection", e)
             raise
 
     def get_embeds_by_userid(self, user_id):
@@ -40,23 +38,23 @@ class MySqlConncetion:
             rows = self.cursor.fetchone()
             self.connection.commit()
 
-            #print('rows:', rows, rows[0])
+            # print('rows:', rows, rows[0])
             return rows[0]
         except Exception as e:
             print("Error: ", e)
+            raise
 
-    def save_embeds_by_userid(self, embeds, user_id):
+    def save_embeds_by_userid(self, source_id, user_id, agent_id, embedding):
         try:
-            sql = "INSERT INTO tb_embeddings(user_id, embedding) " \
-                  "VALUES (%s, %s) ON DUPLICATE " \
-                  "KEY UPDATE embedding = %s "
+            sql = "INSERT INTO tb_face_embeddings(source_id, user_id, agent_id, embedding) " \
+                  "VALUES (%s, %s,%s, %s) "
 
-            self.cursor.execute(sql, (user_id, embeds, embeds))
+            self.cursor.execute(sql, (source_id, user_id, agent_id, embedding))
             self.connection.commit()
 
             return {"message": "success"}
         except Exception as e:
-            print("Error: ", e)
+            print("Error save_embeds_by_userid: ", e)
             raise
 
     def login(self, user_name, password):
@@ -72,5 +70,5 @@ class MySqlConncetion:
             return rows
 
         except Exception as e:
-            print("Error: ", e)
+            print("Error login: ", e)
             raise
