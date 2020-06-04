@@ -112,7 +112,7 @@ class LivenessDetection:
 
             detections = self.net.forward()
 
-            print("detections: ", detections, len(detections))
+            #print("detections: ", detections, len(detections))
 
             end = time.time()
 
