@@ -101,6 +101,7 @@ class LivenessDetection:
     def liveness_detection(self, frame, user_id):
         try:
             liveness_flag = 0
+            print("frame Size: ", frame.shape)
 
             frame = imutils.resize(frame, width=600)
 
@@ -112,7 +113,7 @@ class LivenessDetection:
 
             detections = self.net.forward()
 
-            #print("detections: ", detections, len(detections))
+            # print("detections: ", detections, len(detections))
 
             end = time.time()
 
@@ -204,7 +205,7 @@ class LivenessDetection:
             print("Error in crop_with_ldmk", e)
             raise
 
-    def get_liveness_result(self, img, user_id=0):
+    def get_liveness_result(self, img, source_id, user_id, agent_id):
         try:
             encoded_data = img.split(',')[1]
             decoded_data = base64.b64decode(encoded_data)
@@ -214,17 +215,9 @@ class LivenessDetection:
             frame = cv2.imdecode(np_data, cv2.IMREAD_UNCHANGED)
 
             result = self.liveness_detection(frame, user_id)
-
-            return {
-                "status": 200,
-                "face_found": True,
-                "liveness_flag": result['liveness_flag'],
-                "message": "success"
-            }
+            print("result: ", result)
+            return dict(data=dict(face_found=True, liveness_flag=result['liveness_flag'], message="success"))
 
         except Exception as e:
             print("Error get_liveness_result: ", e)
-            return {
-                "status": 400,
-                "message": 'Something went wrong in face recognition'
-            }
+            raise

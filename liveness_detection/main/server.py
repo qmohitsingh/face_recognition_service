@@ -23,10 +23,10 @@ class Server:
 
         self.load_model()
 
-        self.event = Event()
+        #self.event = Event()
         self.route = Route()
 
-        self.event.register_event(self)
+        #self.event.register_event(self)
         self.route.register_route(self)
 
 

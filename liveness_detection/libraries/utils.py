@@ -75,4 +75,4 @@ def send_success(result=None):
             message=result['message'] if 'message' in result else "success",
             data=result['data'] if 'data' in result else {})
     else:
-        return jsonify(statusCode=400, message="success", data={})
+        return jsonify(statusCode=200, message="success", data={})
