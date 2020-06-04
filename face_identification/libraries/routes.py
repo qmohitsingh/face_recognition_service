@@ -99,9 +99,6 @@ class Route:
                     result = User.user_login(register.mysql, user_name, password)
 
                     return send_success(result)
-                if not request.json:
-                    return "not a json post"
-                return "json post succeeded"
 
             except Exception as e:
                 print("Error add_user: ", e)

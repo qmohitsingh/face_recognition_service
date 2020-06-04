@@ -70,7 +70,7 @@ class FaceMatch:
             print("detecting & extracting faces.")
             result = self.mtcnn.detect(frames)
 
-            print("list: ", result)
+            #print("list: ", result)
 
             for i, res in enumerate(result):
                 if res is None:
