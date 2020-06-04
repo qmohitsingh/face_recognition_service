@@ -13,7 +13,7 @@ class User:
             # print("pickle_data data: ", pickle_data)
             mysql.save_embeds_by_userid(source_id, user_id, agent_id, pickle_data)
 
-            return {'data': {'face_found': embeds_data['counter'], 'message': 'Image has been uploaded.'}}
+            return dict(data=dict(face_found=embeds_data['counter']), message='Image has been uploaded.')
 
         except Exception as e:
             print("Error add_user: ", e)

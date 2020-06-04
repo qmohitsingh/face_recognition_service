@@ -58,7 +58,7 @@ class MySql:
             self.cursor.execute(sql, (source_id, user_id, agent_id, embedding, embedding))
             self.connection.commit()
 
-            return {"message": "success"}
+            return {"message": "Image has been uploaded."}
         except Exception as e:
             print("Error save_embeds_by_userid: ", e)
             raise
