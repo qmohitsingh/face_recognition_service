@@ -17,7 +17,8 @@ class MySql:
                 user=Constants.USER_NAME,
                 password=Constants.PASSWORD,
                 host=Constants.DATABASE_HOST,
-                database=Constants.DATABASE
+                database=Constants.DATABASE,
+                connection_timeout=86400
             )
 
             self.cursor = self.connection.cursor()

@@ -1,5 +1,6 @@
 from flask import request, jsonify
 from component.users.user import User
+import sys
 
 from .auth import Auth
 
@@ -14,6 +15,7 @@ class Route:
 
         @register.app.route('/')
         def hello_world():
+            print('Hello world!', file=sys.stderr)
             return 'Welcome to liveness detection ai'
 
         @register.app.route('/face/match', methods=['GET', 'POST'])
@@ -24,6 +26,7 @@ class Route:
                     return jsonify(result='hello user this get api for facial_recognition of a user')
 
                 if request.method == 'POST':
+                    print('facial_recognition', file=sys.stderr)
 
                     data = request.get_json()
 
@@ -48,6 +51,7 @@ class Route:
                     return jsonify(result='hello user this get api for add user')
 
                 if request.method == 'POST':
+                    print('add_user', file=sys.stderr)
 
                     data = request.get_json()
 
