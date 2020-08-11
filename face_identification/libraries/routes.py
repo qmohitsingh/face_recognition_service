@@ -20,8 +20,8 @@ class Route:
 
         @register.app.route('/')
         def hello_world():
-            logging.info('Hello world!')
-            return 'Welcome to liveness detection ai'
+            logging.info('Hello world! Welcome to Face recognition detection ai')
+            return 'Welcome to Face recognition detection ai'
 
         @register.app.route('/face/match', methods=['GET', 'POST'])
         def facial_recognition():

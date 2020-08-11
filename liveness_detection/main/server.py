@@ -12,6 +12,10 @@ from libraries.routes import Route
 from component.liveness import LivenessDetection
 
 
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+
+
 class Server:
     def __init__(self):
 
@@ -35,6 +39,6 @@ class Server:
 
     def run(self):
         http_server = WSGIServer((Constants.HOST, Constants.PORT), self.app)
-        print("Sever Started: http://"+Constants.HOST+":"+str(Constants.PORT))
+        logging.info("Sever Started: http://"+Constants.HOST+":"+str(Constants.PORT))
         http_server.serve_forever()
 

@@ -1,6 +1,9 @@
 import requests
 from config import Constants
 
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+
 
 class Auth:
     def __init__(self):
@@ -16,7 +19,7 @@ class Auth:
             return False
 
         except Exception as error:
-            print("set_authentication(Auth Class): ", error)
+            logging.debug("set_authentication(Auth Class): ", error)
             return False
 
     def verify_authentication_tookan(self, access_token):
@@ -30,7 +33,7 @@ class Auth:
             #print("response: ", response)
 
             if response["status"] is 101:
-                print("Session expired. please login again.")
+                logging.info("Session expired. please login again.")
 
             if response['status'] != 200:
                 return self.isAuthenticated
@@ -45,7 +48,7 @@ class Auth:
 
             return self.isAuthenticated
         except Exception as error:
-            print("set_authentication(Auth Class): ", error)
+            logging.debug("set_authentication(Auth Class): ", error)
             return False
 
     def get_authentication(self):
