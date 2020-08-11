@@ -52,4 +52,3 @@ class Route:
             except Exception as e:
                 logging.debug("Something went wrong in face recognition: ")
                 return send_error('Something went wrong in face recognition', e)
-
