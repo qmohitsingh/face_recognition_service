@@ -35,10 +35,10 @@ class Route:
 
                     data = request.get_json()
 
-                    is_authenticated = self.session.authentication(data['access_token'], data['source_id'])
+                    #is_authenticated = self.session.authentication(data['access_token'], data['source_id'])
 
-                    if not is_authenticated:
-                        return send_error({"status": 401, "message": 'Unauthorized Error.'})
+                    #if not is_authenticated:
+                    #    return send_error({"status": 401, "message": 'Unauthorized Error.'})
 
                     result = register.facematch.facial_recognition_method(register.mysql, data["image"], data["source_id"], data["user_id"], data["agent_id"])
 

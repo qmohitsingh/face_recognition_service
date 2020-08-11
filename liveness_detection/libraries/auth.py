@@ -7,7 +7,7 @@ logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 class Auth:
     def __init__(self):
-        self.isAuthenticated = True
+        self.isAuthenticated = False
 
     def authentication(self, access_token, source_id):
 
