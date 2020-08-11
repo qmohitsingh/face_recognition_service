@@ -26,7 +26,7 @@ class MySql:
             self.cursor = self.connection.cursor()
 
             #logger.info("created connection to mysql")
-            logging.info("Connected to mysql successfully..", self.cursor, self.connection.is_connected())
+            logging.info("Connected to mysql successfully..")
 
         except Exception as e:
             logging.debug('error in creating mysql connection', e)
