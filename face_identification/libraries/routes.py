@@ -45,7 +45,7 @@ class Route:
                     return send_success(result)
 
             except Exception as e:
-                logging.debug("Error add_user: ", e)
+                logging.debug("Something went wrong in face recognition: ", e)
                 return send_error('Something went wrong in face recognition')
 
         @register.app.route('/add/user', methods=['GET', 'POST'])

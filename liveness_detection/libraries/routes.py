@@ -35,7 +35,7 @@ class Route:
                     return jsonify(result='hello user this get api for facial_recognition of a user')
 
                 if request.method == 'POST':
-
+                    logging.info('liveness_test method called')
                     data = request.get_json()
 
                     #is_authenticated = self.session.authentication(data['access_token'], data['source_id'])
@@ -48,10 +48,9 @@ class Route:
                         data["image"], data["source_id"], data["user_id"], data["agent_id"]
                     )
 
-                    logging.info({result: result})
                     return send_success(result)
 
             except Exception as e:
-                logging.debug("Error add_user: ", e)
+                logging.debug("Something went wrong in face recognition: ", e)
                 return send_error('Something went wrong in face recognition')
 
