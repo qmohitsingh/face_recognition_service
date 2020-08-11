@@ -20,7 +20,7 @@ class Route:
 
         @register.app.route('/')
         def hello_world():
-            logging.info('Hello world!', file=sys.stderr)
+            logging.info('Hello world!')
             return 'Welcome to liveness detection ai'
 
         @register.app.route('/face/match', methods=['GET', 'POST'])
@@ -31,7 +31,7 @@ class Route:
                     return jsonify(result='hello user this get api for facial_recognition of a user')
 
                 if request.method == 'POST':
-                    logging.info('facial_recognition', file=sys.stderr)
+                    logging.info('facial_recognition')
 
                     data = request.get_json()
 
@@ -56,7 +56,7 @@ class Route:
                     return jsonify(result='hello user this get api for add user')
 
                 if request.method == 'POST':
-                    logging.info('add_user', file=sys.stderr)
+                    logging.info('add_user')
 
                     data = request.get_json()
 
