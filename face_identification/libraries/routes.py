@@ -6,6 +6,11 @@ from .auth import Auth
 
 from .utils import send_error, send_success
 
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+
+
+
 class Route:
 
     def __init__(self):
@@ -15,7 +20,7 @@ class Route:
 
         @register.app.route('/')
         def hello_world():
-            print('Hello world!', file=sys.stderr)
+            logging.info('Hello world!', file=sys.stderr)
             return 'Welcome to liveness detection ai'
 
         @register.app.route('/face/match', methods=['GET', 'POST'])
@@ -26,7 +31,7 @@ class Route:
                     return jsonify(result='hello user this get api for facial_recognition of a user')
 
                 if request.method == 'POST':
-                    print('facial_recognition', file=sys.stderr)
+                    logging.info('facial_recognition', file=sys.stderr)
 
                     data = request.get_json()
 
@@ -40,7 +45,7 @@ class Route:
                     return send_success(result)
 
             except Exception as e:
-                print("Error add_user: ", e)
+                logging.debug("Error add_user: ", e)
                 return send_error('Something went wrong in face recognition')
 
         @register.app.route('/add/user', methods=['GET', 'POST'])
@@ -51,7 +56,7 @@ class Route:
                     return jsonify(result='hello user this get api for add user')
 
                 if request.method == 'POST':
-                    print('add_user', file=sys.stderr)
+                    logging.info('add_user', file=sys.stderr)
 
                     data = request.get_json()
 
@@ -64,7 +69,7 @@ class Route:
 
                     return send_success(result)
             except Exception as e:
-                print("Error add_user api: ", e)
+                logging.debug("Error add_user api: ", e)
                 return send_error()
 
         # @register.app.route('/update/user', methods=['GET', 'POST'])
@@ -98,13 +103,13 @@ class Route:
                     user_name = data['user_name']
                     password = data['password']
 
-                    print("data post api: ", user_name, password)
+                    logging.info("data post api: ", user_name, password)
 
                     result = User.user_login(register.mysql, user_name, password)
 
                     return send_success(result)
 
             except Exception as e:
-                print("Error add_user: ", e)
+                logging.debug("Error add_user: ", e)
                 return send_error(dict(message='Failed to login'))
 

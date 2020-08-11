@@ -6,6 +6,10 @@ import codecs
 
 from flask import jsonify
 
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+
+
 # Euclidean Distance Caculator
 def face_distance(face_encodings, face_to_compare):
     """

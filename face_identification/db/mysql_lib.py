@@ -2,6 +2,8 @@ import mysql.connector
 from config import Constants
 import logging
 import traceback
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 # # logger configuration
 # logging.basicConfig(level=logging.DEBUG, filename='face_recognition.log',
@@ -24,10 +26,10 @@ class MySql:
             self.cursor = self.connection.cursor()
 
             #logger.info("created connection to mysql")
-            print("Connected to mysql successfully..", self.cursor, self.connection.is_connected())
+            logging.info("Connected to mysql successfully..", self.cursor, self.connection.is_connected())
 
         except Exception as e:
-            print("This file is running", e)
+            logging.debug('error in creating mysql connection', e)
             #logger.error("error in creating mysql connection", e)
             raise
 
@@ -40,10 +42,10 @@ class MySql:
             rows = self.cursor.fetchone()
             self.connection.commit()
 
-            # print('rows:', rows, rows[0])
+            logging.info('get_embeds_by_userid method:', {"rows:", rows})
             return rows[0]
         except Exception as e:
-            print("Error: ", e)
+            logging.debug("get_embeds_by_userid method Error: ", e)
             raise
 
     def save_embeds_by_userid(self, source_id, user_id, agent_id, embedding):
@@ -58,10 +60,10 @@ class MySql:
 
             self.cursor.execute(sql, (source_id, user_id, agent_id, embedding, embedding))
             self.connection.commit()
-
+            logging.info("save_embeds_by_userid method: ", {"message": "Image has been uploaded."})
             return {"message": "Image has been uploaded."}
         except Exception as e:
-            print("Error save_embeds_by_userid: ", e)
+            logging.debug('Error save_embeds_by_userid::', e)
             raise
 
     def login(self, user_name, password):
@@ -73,9 +75,8 @@ class MySql:
             self.cursor.execute(sql, (user_name, password, 0))
             rows = self.cursor.fetchone()
             self.connection.commit()
-
+            logging.info("login method: ", {"data": rows})
             return rows
-
         except Exception as e:
-            print("Error login: ", e)
+            logging.debug('login method:', e)
             raise

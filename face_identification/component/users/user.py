@@ -1,6 +1,10 @@
 from flask import jsonify
 from libraries.utils import compare_faces, base64_to_img, dump_pickle, load_pickle
 
+import logging
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+
+
 class User:
 
     @staticmethod
@@ -16,7 +20,7 @@ class User:
             return dict(data=dict(face_found=embeds_data['counter']), message='Image has been uploaded.')
 
         except Exception as e:
-            print("Error add_user: ", e)
+            logging.debug("Error add_user: ", e)
             raise
 
     @staticmethod
@@ -24,16 +28,16 @@ class User:
         try:
             rows = mysql.login(user_name, password)
 
-            print("rows: ", rows)
+            logging.info("rows: ", rows)
 
             if rows is None:
                 return {'message': "Invalid credentials."}
 
-            print("data post api: ", user_name, password)
+            logging.info("data post api: ", user_name, password)
 
             return dict(message="login successful", data=dict(user_id=rows[0], user_name=rows[1], name=rows[2]))
         except Exception as e:
-            print("Error login: ", e)
+            logging.debug("Error login: ", e)
             raise
 
     @staticmethod
@@ -42,7 +46,7 @@ class User:
             embeds_data = facematch.get_face_embedding(image)
 
             pickle_data = dump_pickle(embeds_data['embeds'])
-            print("pickle_data data: ", pickle_data)
+            logging.info("pickle_data data: ", pickle_data)
             mysql.save_embeds_by_userid(source_id, user_id, agent_id, pickle_data)
 
             return {
@@ -52,7 +56,7 @@ class User:
             }
 
         except Exception as e:
-            print("Error add_user: ", e)
+            logging.debug("Error add_user: ", e)
             return {
                 "status": 400,
                 "message": 'Something went wrong.',
