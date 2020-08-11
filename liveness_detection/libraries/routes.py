@@ -47,10 +47,9 @@ class Route:
                     result = register.liveness.get_liveness_result(
                         data["image"], data["source_id"], data["user_id"], data["agent_id"]
                     )
-                    logging.info('liveness_test method result:', result)
                     return send_success(result)
 
             except Exception as e:
-                logging.debug("Something went wrong in face recognition: ", e)
-                return send_error('Something went wrong in face recognition')
+                logging.debug("Something went wrong in face recognition: ")
+                return send_error('Something went wrong in face recognition', e)
 
