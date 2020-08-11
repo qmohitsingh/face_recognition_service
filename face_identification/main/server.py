@@ -16,21 +16,24 @@ logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 class Server:
     def __init__(self):
+        try:
+            self.mysql = MySql()
 
-        self.mysql = MySql()
+            self.app = Flask(__name__)
+            self.socketio = SocketIO(self.app, cors_allowed_origins="*")
+            CORS(self.app)
 
-        self.app = Flask(__name__)
-        self.socketio = SocketIO(self.app, cors_allowed_origins="*")
-        CORS(self.app)
+            #self.load_model()
+            self.facematch = FaceMatch()
 
-        #self.load_model()
-        self.facematch = FaceMatch()
+            #self.event = Event()
+            self.route = Route()
 
-        #self.event = Event()
-        self.route = Route()
-
-        #self.event.register_event(self)
-        self.route.register_route(self)
+            #self.event.register_event(self)
+            self.route.register_route(self)
+        except Exception as e:
+            logging.debug("Server Initialization method Error: ", e)
+            raise
 
     # def load_model(self):
     #     self.liveness.load()

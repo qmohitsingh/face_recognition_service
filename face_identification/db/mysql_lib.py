@@ -42,7 +42,7 @@ class MySql:
             rows = self.cursor.fetchone()
             self.connection.commit()
 
-            logging.info('get_embeds_by_userid method:', {"rows:", rows})
+            logging.info('get_embeds_by_userid method:', rows)
             return rows[0]
         except Exception as e:
             logging.debug("get_embeds_by_userid method Error: ", e)
@@ -60,7 +60,7 @@ class MySql:
 
             self.cursor.execute(sql, (source_id, user_id, agent_id, embedding, embedding))
             self.connection.commit()
-            logging.info("save_embeds_by_userid method: ", {"message": "Image has been uploaded."})
+            logging.info("save_embeds_by_userid method: ",  "Image has been uploaded.")
             return {"message": "Image has been uploaded."}
         except Exception as e:
             logging.debug('Error save_embeds_by_userid::', e)
@@ -75,7 +75,7 @@ class MySql:
             self.cursor.execute(sql, (user_name, password, 0))
             rows = self.cursor.fetchone()
             self.connection.commit()
-            logging.info("login method: ", {"data": rows})
+            logging.info("login method: ", rows)
             return rows
         except Exception as e:
             logging.debug('login method:', e)
