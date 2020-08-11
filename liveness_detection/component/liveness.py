@@ -203,7 +203,7 @@ class LivenessDetection:
 
         except Exception as e:
             print("Error in crop_with_ldmk", e)
-            raise
+            return {"liveness_flag": 0, "user_id": user_id}
 
     def get_liveness_result(self, img, source_id, user_id, agent_id):
         try:
