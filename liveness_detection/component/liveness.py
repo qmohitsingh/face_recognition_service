@@ -149,6 +149,12 @@ class LivenessDetection:
                     y2 = int(endY)
 
                     roi = frame[y1:y2, x1:x2]
+
+
+                    #check to see if image failed to load.
+                    if np.shape(roi) == ():
+                        return {"liveness_flag": 0, "user_id": user_id}
+
                     gary_frame = cv2.cvtColor(roi, cv2.COLOR_RGB2GRAY)
                     resize_mat = np.float32(gary_frame)
                     m = np.zeros((40, 40))
