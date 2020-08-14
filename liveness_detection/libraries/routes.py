@@ -47,6 +47,8 @@ class Route:
                     result = register.liveness.get_liveness_result(
                         data["image"], data["source_id"], data["user_id"], data["agent_id"]
                     )
+
+                    logging.info('liveness_test method response:  %s', {'result': result})
                     return send_success(result)
 
             except Exception as e:
