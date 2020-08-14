@@ -48,7 +48,7 @@ class Route:
                         data["image"], data["source_id"], data["user_id"], data["agent_id"]
                     )
 
-                    logging.info('liveness_test method response:  %s', {'result': result})
+                    logging.info('liveness_test method response:  %s', {'result': result, 'image_url': data["image_url"]})
                     return send_success(result)
 
             except Exception as e:
